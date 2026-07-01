@@ -1,0 +1,6 @@
+@ehrenamt_bruder_HostAddress = http://localhost:5068
+
+GET {{ehrenamt_bruder_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
