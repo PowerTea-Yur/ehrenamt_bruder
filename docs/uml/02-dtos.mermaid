@@ -1,0 +1,415 @@
+classDiagram
+    direction TB
+
+    %% ===================== RESPONSE DTOs =====================
+    class VolunteerDto {
+        <<dto>>
+        +Guid Id
+        +Guid UserId
+        +string FirstName
+        +string LastName
+        +string Email
+        +string Bio
+        +string EmergencyContactName
+        +string EmergencyContactPhone
+        +DateTime? DateOfBirth
+        +AddressDto Address
+        +List<VolunteerSkillDto> Skills
+        +List<VolunteerCertificationDto> Certifications
+        +List<AvailabilityDto> Availabilities
+    }
+
+    class VolunteerSkillDto {
+        <<dto>>
+        +Guid SkillId
+        +string SkillName
+        +string Category
+        +string Proficiency
+        +bool IsVerified
+    }
+
+    class VolunteerCertificationDto {
+        <<dto>>
+        +Guid CertificationId
+        +string CertificationName
+        +string Issuer
+        +DateTime ExpiryDate
+        +string VerificationStatus
+    }
+
+    class AvailabilityDto {
+        <<dto>>
+        +int? DayOfWeek
+        +DateTime? SpecificDate
+        +TimeSpan StartTime
+        +TimeSpan EndTime
+        +string RecurrenceType
+        +DateTime ValidFrom
+        +DateTime ValidUntil
+    }
+
+    class AddressDto {
+        <<dto>>
+        +Guid Id
+        +string Street
+        +string City
+        +string PostalCode
+        +string Country
+        +double Latitude
+        +double Longitude
+    }
+
+    class OrganizationDto {
+        <<dto>>
+        +Guid Id
+        +string Name
+        +string Description
+        +string Website
+        +string LogoUrl
+        +AddressDto Address
+        +bool IsActive
+    }
+
+    class EventDto {
+        <<dto>>
+        +Guid Id
+        +Guid OrganizationId
+        +string OrganizationName
+        +string Name
+        +string Description
+        +DateTime StartDate
+        +DateTime EndDate
+        +AddressDto Address
+        +bool IsRecurring
+        +Guid? EventSeriesId
+        +bool IsPublished
+        +List<ShiftDto> Shifts
+    }
+
+    class ShiftDto {
+        <<dto>>
+        +Guid Id
+        +Guid EventId
+        +Guid ShiftTemplateId
+        +string ShiftTemplateName
+        +string Role
+        +DateTime ShiftDate
+        +TimeSpan StartTime
+        +TimeSpan EndTime
+        +int MaxVolunteers
+        +int CurrentVolunteers
+        +string Notes
+        +bool IsCancelled
+        +List<ShiftSlotDto> Slots
+    }
+
+    class ShiftSlotDto {
+        <<dto>>
+        +Guid Id
+        +Guid ShiftId
+        +int Position
+        +int MaxCapacity
+        +int CurrentCount
+        +bool IsFilled
+        +bool IsRegistered
+        +bool IsWaitlisted
+        +int WaitlistPosition
+    }
+
+    class RegistrationDto {
+        <<dto>>
+        +Guid Id
+        +Guid VolunteerProfileId
+        +Guid ShiftSlotId
+        +string Status
+        +DateTime RegisteredAt
+        +DateTime? ConfirmedAt
+        +EventDto Event
+        +ShiftDto Shift
+    }
+
+    class SkillDto {
+        <<dto>>
+        +Guid Id
+        +string Name
+        +string Category
+        +string Description
+    }
+
+    class CertificationDto {
+        <<dto>>
+        +Guid Id
+        +string Name
+        +string Issuer
+        +string Description
+    }
+
+    class ShiftTemplateDto {
+        <<dto>>
+        +Guid Id
+        +Guid OrganizationId
+        +string Name
+        +string Role
+        +TimeSpan StartTime
+        +TimeSpan EndTime
+        +int MaxVolunteersPerSlot
+        +List<SkillDto> RequiredSkills
+        +List<CertificationDto> RequiredCertifications
+    }
+
+    class EventSeriesDto {
+        <<dto>>
+        +Guid Id
+        +Guid OrganizationId
+        +string Name
+        +string Description
+        +string RecurrenceRule
+        +DateTime StartDate
+        +DateTime EndDate
+        +AddressDto Address
+    }
+
+    class AttendanceRecordDto {
+        <<dto>>
+        +Guid Id
+        +Guid RegistrationId
+        +DateTime CheckedInAt
+        +DateTime? CheckedOutAt
+        +decimal HoursVolunteered
+        +string Status
+        +string Notes
+    }
+
+    class WaitlistEntryDto {
+        <<dto>>
+        +Guid Id
+        +Guid VolunteerProfileId
+        +Guid ShiftSlotId
+        +int Position
+        +DateTime JoinedAt
+        +DateTime? NotifiedAt
+        +bool IsActive
+    }
+
+    %% ===================== REQUEST DTOs =====================
+    class CreateVolunteerDto {
+        <<createDto>>
+        +string FirstName
+        +string LastName
+        +string Email
+        +string Bio
+        +string EmergencyContactName
+        +string EmergencyContactPhone
+        +DateTime? DateOfBirth
+        +CreateAddressDto Address
+    }
+
+    class UpdateVolunteerDto {
+        <<updateDto>>
+        +string Bio
+        +string EmergencyContactName
+        +string EmergencyContactPhone
+        +DateTime? DateOfBirth
+        +UpdateAddressDto Address
+    }
+
+    class AddVolunteerSkillDto {
+        <<createDto>>
+        +Guid SkillId
+        +string Proficiency
+    }
+
+    class AddVolunteerCertificationDto {
+        <<createDto>>
+        +Guid CertificationId
+        +DateTime ExpiryDate
+        +string CertificateNumber
+        +string DocumentUrl
+    }
+
+    class UpdateCertVerificationDto {
+        <<updateDto>>
+        +string VerificationStatus
+    }
+
+    class AddAvailabilityDto {
+        <<createDto>>
+        +int? DayOfWeek
+        +DateTime? SpecificDate
+        +TimeSpan StartTime
+        +TimeSpan EndTime
+        +string RecurrenceType
+        +DateTime ValidFrom
+        +DateTime ValidUntil
+    }
+
+    class CreateAddressDto {
+        <<createDto>>
+        +string Street
+        +string City
+        +string PostalCode
+        +string Country
+        +double Latitude
+        +double Longitude
+    }
+
+    class UpdateAddressDto {
+        <<updateDto>>
+        +string Street
+        +string City
+        +string PostalCode
+        +string Country
+        +double Latitude
+        +double Longitude
+    }
+
+    class CreateOrganizationDto {
+        <<createDto>>
+        +string Name
+        +string Description
+        +string Website
+        +string LogoUrl
+        +CreateAddressDto Address
+    }
+
+    class UpdateOrganizationDto {
+        <<updateDto>>
+        +string Description
+        +string Website
+        +string LogoUrl
+        +UpdateAddressDto Address
+        +bool IsActive
+    }
+
+    class AddMemberDto {
+        <<createDto>>
+        +Guid UserId
+        +string Role
+    }
+
+    class CreateEventDto {
+        <<createDto>>
+        +Guid OrganizationId
+        +string Name
+        +string Description
+        +DateTime StartDate
+        +DateTime EndDate
+        +CreateAddressDto Address
+        +bool IsRecurring
+        +Guid? EventSeriesId
+    }
+
+    class UpdateEventDto {
+        <<updateDto>>
+        +string Name
+        +string Description
+        +DateTime StartDate
+        +DateTime EndDate
+        +UpdateAddressDto Address
+        +bool IsPublished
+    }
+
+    class CreateShiftDto {
+        <<createDto>>
+        +Guid ShiftTemplateId
+        +DateTime ShiftDate
+        +int MaxVolunteers
+        +string Notes
+    }
+
+    class CreateShiftTemplateDto {
+        <<createDto>>
+        +Guid OrganizationId
+        +string Name
+        +string Role
+        +TimeSpan StartTime
+        +TimeSpan EndTime
+        +int MaxVolunteersPerSlot
+        +List<Guid> RequiredSkillIds
+        +List<Guid> RequiredCertificationIds
+    }
+
+    class UpdateShiftTemplateDto {
+        <<updateDto>>
+        +string Name
+        +string Role
+        +TimeSpan StartTime
+        +TimeSpan EndTime
+        +int MaxVolunteersPerSlot
+    }
+
+    class CreateEventSeriesDto {
+        <<createDto>>
+        +Guid OrganizationId
+        +string Name
+        +string Description
+        +string RecurrenceRule
+        +DateTime StartDate
+        +DateTime EndDate
+        +CreateAddressDto Address
+    }
+
+    class CreateSkillDto {
+        <<createDto>>
+        +string Name
+        +string Category
+        +string Description
+    }
+
+    class UpdateSkillDto {
+        <<updateDto>>
+        +string Name
+        +string Category
+        +string Description
+    }
+
+    class CreateCertificationDto {
+        <<createDto>>
+        +string Name
+        +string Issuer
+        +string Description
+    }
+
+    class UpdateCertificationDto {
+        <<updateDto>>
+        +string Name
+        +string Issuer
+        +string Description
+    }
+
+    class EventFilterDto {
+        <<filterDto>>
+        +Guid? OrganizationId
+        +DateTime? StartDate
+        +DateTime? EndDate
+        +bool? IsPublished
+        +bool? IsRecurring
+        +string? SearchTerm
+        +int Page
+        +int PageSize
+    }
+
+    %% ===================== RELATIONSHIPS =====================
+    VolunteerDto *-- AddressDto : has
+    VolunteerDto *-- VolunteerSkillDto : has
+    VolunteerDto *-- VolunteerCertificationDto : has
+    VolunteerDto *-- AvailabilityDto : has
+
+    VolunteerSkillDto *-- SkillDto : references
+    VolunteerCertificationDto *-- CertificationDto : references
+
+    OrganizationDto *-- AddressDto : has
+
+    EventDto *-- AddressDto : has
+    EventDto *-- ShiftDto : has
+
+    ShiftDto *-- ShiftSlotDto : has
+    ShiftDto *-- ShiftTemplateDto : references
+
+    RegistrationDto *-- EventDto : belongs to
+    RegistrationDto *-- ShiftDto : belongs to
+
+    ShiftTemplateDto *-- SkillDto : requires
+    ShiftTemplateDto *-- CertificationDto : requires
+
+    EventSeriesDto *-- AddressDto : has

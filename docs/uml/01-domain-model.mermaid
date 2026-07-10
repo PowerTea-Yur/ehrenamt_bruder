@@ -1,0 +1,276 @@
+classDiagram
+    direction TB
+
+    %% ===================== VALUE OBJECTS =====================
+    class Address {
+        <<valueObject>>
+        +Guid Id
+        +string Street
+        +string City
+        +string PostalCode
+        +string Country
+        +double Latitude
+        +double Longitude
+    }
+
+    class Skill {
+        <<valueObject>>
+        +Guid Id
+        +string Name
+        +string Category
+        +string Description
+    }
+
+    class Certification {
+        <<valueObject>>
+        +Guid Id
+        +string Name
+        +string Issuer
+        +string Description
+    }
+
+    class ShiftTime {
+        <<valueObject>>
+        +Guid Id
+        +TimeSpan StartTime
+        +TimeSpan EndTime
+        +TimeZoneInfo TimeZone
+    }
+
+    class EventRecurrence {
+        <<valueObject>>
+        +Guid Id
+        +string RecurrenceRule
+        +DateTime StartDate
+        +DateTime EndDate
+        +List<DateTime> Exceptions
+    }
+
+    %% ===================== USER & IDENTITY =====================
+    class User {
+        +Guid Id
+        +string Email
+        +string PasswordHash
+        +string FirstName
+        +string LastName
+        +string PhoneNumber
+        +DateTime CreatedAt
+        +bool IsActive
+    }
+
+    class VolunteerProfile {
+        +Guid Id
+        +Guid UserId
+        +string Bio
+        +string EmergencyContactName
+        +string EmergencyContactPhone
+        +DateTime? DateOfBirth
+        +Guid AddressId
+        +DateTime CreatedAt
+    }
+
+    class Organization {
+        +Guid Id
+        +string Name
+        +string Description
+        +string Website
+        +string LogoUrl
+        +Guid AddressId
+        +DateTime CreatedAt
+        +bool IsActive
+    }
+
+    class OrganizationMembership {
+        +Guid Id
+        +Guid UserId
+        +Guid OrganizationId
+        +string Role
+        +DateTime JoinedAt
+    }
+
+    %% ===================== EVENT & SHIFT DOMAIN =====================
+    class Event {
+        +Guid Id
+        +Guid OrganizationId
+        +string Name
+        +string Description
+        +DateTime StartDate
+        +DateTime EndDate
+        +Guid AddressId
+        +bool IsRecurring
+        +Guid? EventSeriesId
+        +DateTime CreatedAt
+        +bool IsPublished
+    }
+
+    class EventSeries {
+        +Guid Id
+        +Guid OrganizationId
+        +string Name
+        +string Description
+        +Guid RecurrenceId
+        +Guid AddressId
+        +DateTime CreatedAt
+    }
+
+    class EventOccurrence {
+        +Guid Id
+        +Guid EventSeriesId
+        +DateTime OccurrenceDate
+        +bool IsCancelled
+        +Guid? EventId
+    }
+
+    class ShiftTemplate {
+        +Guid Id
+        +Guid OrganizationId
+        +string Name
+        +string Role
+        +Guid TimeId
+        +int MaxVolunteersPerSlot
+        +DateTime CreatedAt
+    }
+
+    class Shift {
+        +Guid Id
+        +Guid EventId
+        +Guid ShiftTemplateId
+        +DateTime ShiftDate
+        +Guid TimeId
+        +int MaxVolunteers
+        +string Notes
+        +bool IsCancelled
+    }
+
+    class ShiftSlot {
+        +Guid Id
+        +Guid ShiftId
+        +int Position
+        +int MaxCapacity
+        +int CurrentCount
+        +bool IsFilled
+    }
+
+    %% ===================== REGISTRATION & ATTENDANCE =====================
+    class Registration {
+        +Guid Id
+        +Guid VolunteerProfileId
+        +Guid ShiftSlotId
+        +string Status
+        +DateTime RegisteredAt
+        +DateTime? ConfirmedAt
+        +DateTime? CancelledAt
+        +string CancellationReason
+        +Guid? AttendanceRecordId
+    }
+
+    class AttendanceRecord {
+        +Guid Id
+        +Guid RegistrationId
+        +DateTime CheckedInAt
+        +DateTime? CheckedOutAt
+        +decimal HoursVolunteered
+        +string Status
+        +string Notes
+    }
+
+    class WaitlistEntry {
+        +Guid Id
+        +Guid VolunteerProfileId
+        +Guid ShiftSlotId
+        +int Position
+        +DateTime JoinedAt
+        +DateTime? NotifiedAt
+        +DateTime? ClaimedAt
+        +bool IsActive
+    }
+
+    %% ===================== SKILLS & CERTIFICATIONS =====================
+    class VolunteerSkill {
+        +Guid Id
+        +Guid VolunteerProfileId
+        +Guid SkillId
+        +string Proficiency
+        +bool IsVerified
+        +Guid? VerifiedBy
+        +DateTime? VerifiedAt
+    }
+
+    class VolunteerCertification {
+        +Guid Id
+        +Guid VolunteerProfileId
+        +Guid CertificationId
+        +DateTime ExpiryDate
+        +string VerificationStatus
+        +Guid? VerifiedBy
+        +DateTime? VerifiedAt
+        +string CertificateNumber
+        +string DocumentUrl
+    }
+
+    class ShiftTemplateSkill {
+        +Guid Id
+        +Guid ShiftTemplateId
+        +Guid SkillId
+        +bool IsRequired
+    }
+
+    class ShiftTemplateCertification {
+        +Guid Id
+        +Guid ShiftTemplateId
+        +Guid CertificationId
+        +bool IsRequired
+    }
+
+    class Availability {
+        +Guid Id
+        +Guid VolunteerProfileId
+        +int? DayOfWeek
+        +DateTime? SpecificDate
+        +TimeSpan StartTime
+        +TimeSpan EndTime
+        +string RecurrenceType
+        +DateTime ValidFrom
+        +DateTime ValidUntil
+    }
+
+    %% ===================== RELATIONSHIPS =====================
+    User "1" *-- "1" VolunteerProfile
+    User "1" *-- "*" OrganizationMembership
+    Organization "1" *-- "*" OrganizationMembership
+
+    Organization "1" *-- "*" Event
+    Organization "1" *-- "*" ShiftTemplate
+    ShiftTemplate "1" *-- "*" Shift
+    Shift "1" *-- "*" ShiftSlot
+
+    EventSeries "1" *-- "*" EventOccurrence
+    EventOccurrence "1" -- "0..1" Event
+
+    VolunteerProfile "1" *-- "*" VolunteerSkill
+    VolunteerProfile "1" *-- "*" VolunteerCertification
+    VolunteerProfile "1" *-- "*" Availability
+    VolunteerProfile "1" *-- "*" Registration
+
+    ShiftSlot "1" *-- "*" Registration
+    ShiftSlot "1" *-- "*" WaitlistEntry
+    Registration "1" *-- "1" AttendanceRecord
+    Registration *-- VolunteerProfile
+    WaitlistEntry *-- VolunteerProfile
+
+    ShiftTemplate "1" *-- "*" ShiftTemplateSkill
+    ShiftTemplate "1" *-- "*" ShiftTemplateCertification
+
+    %% ===================== VALUE OBJECT RELATIONSHIPS =====================
+    VolunteerProfile *-- Address
+    Organization *-- Address
+    Event *-- Address
+    EventSeries *-- Address
+    ShiftTemplate *-- ShiftTime
+    Shift *-- ShiftTime
+    VolunteerProfile *-- Availability
+    EventSeries *-- EventRecurrence
+    VolunteerSkill *-- Skill
+    VolunteerCertification *-- Certification
+    ShiftTemplateSkill *-- Skill
+    ShiftTemplateCertification *-- Certification

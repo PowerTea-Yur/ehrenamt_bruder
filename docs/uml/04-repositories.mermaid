@@ -1,0 +1,449 @@
+classDiagram
+    direction TB
+
+    %% ===================== REPOSITORY INTERFACES =====================
+    class IVolunteerRepository {
+        <<interface>>
+        +Task<VolunteerProfile> GetByIdAsync(Guid id)
+        +Task<List<VolunteerProfile>> GetAllAsync()
+        +Task AddAsync(VolunteerProfile entity)
+        +Task UpdateAsync(VolunteerProfile entity)
+        +Task DeleteAsync(Guid id)
+        +Task<VolunteerProfile> GetByUserIdAsync(Guid userId)
+        +Task<List<VolunteerProfile>> GetByOrganizationAsync(Guid organizationId)
+    }
+
+    class IOrganizationRepository {
+        <<interface>>
+        +Task<Organization> GetByIdAsync(Guid id)
+        +Task<List<Organization>> GetAllAsync()
+        +Task AddAsync(Organization entity)
+        +Task UpdateAsync(Organization entity)
+        +Task DeleteAsync(Guid id)
+        +Task<Organization> GetByNameAsync(string name)
+    }
+
+    class IOrganizationMembershipRepository {
+        <<interface>>
+        +Task<OrganizationMembership> GetByIdAsync(Guid id)
+        +Task<List<OrganizationMembership>> GetByOrganizationAsync(Guid organizationId)
+        +Task<List<OrganizationMembership>> GetByUserAsync(Guid userId)
+        +Task<OrganizationMembership> GetByUserAndOrganizationAsync(Guid userId, Guid organizationId)
+        +Task AddAsync(OrganizationMembership entity)
+        +Task UpdateAsync(OrganizationMembership entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class IEventRepository {
+        <<interface>>
+        +Task<Event> GetByIdAsync(Guid id)
+        +Task<List<Event>> GetAllAsync(EventFilterDto filter)
+        +Task AddAsync(Event entity)
+        +Task UpdateAsync(Event entity)
+        +Task DeleteAsync(Guid id)
+        +Task<List<Event>> GetByOrganizationAsync(Guid organizationId)
+        +Task<List<Event>> GetUpcomingAsync(DateTime from, DateTime to)
+    }
+
+    class IEventSeriesRepository {
+        <<interface>>
+        +Task<EventSeries> GetByIdAsync(Guid id)
+        +Task<List<EventSeries>> GetByOrganizationAsync(Guid organizationId)
+        +Task AddAsync(EventSeries entity)
+        +Task UpdateAsync(EventSeries entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class IEventOccurrenceRepository {
+        <<interface>>
+        +Task<EventOccurrence> GetByIdAsync(Guid id)
+        +Task<List<EventOccurrence>> GetBySeriesAsync(Guid seriesId)
+        +Task AddAsync(EventOccurrence entity)
+        +Task UpdateAsync(EventOccurrence entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class IShiftTemplateRepository {
+        <<interface>>
+        +Task<ShiftTemplate> GetByIdAsync(Guid id)
+        +Task<List<ShiftTemplate>> GetByOrganizationAsync(Guid organizationId)
+        +Task AddAsync(ShiftTemplate entity)
+        +Task UpdateAsync(ShiftTemplate entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class IShiftRepository {
+        <<interface>>
+        +Task<Shift> GetByIdAsync(Guid id)
+        +Task<List<Shift>> GetByEventAsync(Guid eventId)
+        +Task AddAsync(Shift entity)
+        +Task UpdateAsync(Shift entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class IShiftSlotRepository {
+        <<interface>>
+        +Task<ShiftSlot> GetByIdAsync(Guid id)
+        +Task<List<ShiftSlot>> GetByShiftAsync(Guid shiftId)
+        +Task AddAsync(ShiftSlot entity)
+        +Task UpdateAsync(ShiftSlot entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class IRegistrationRepository {
+        <<interface>>
+        +Task<Registration> GetByIdAsync(Guid id)
+        +Task<List<Registration>> GetByVolunteerAsync(Guid volunteerId)
+        +Task<List<Registration>> GetByShiftSlotAsync(Guid shiftSlotId)
+        +Task AddAsync(Registration entity)
+        +Task UpdateAsync(Registration entity)
+        +Task DeleteAsync(Guid id)
+        +Task<Registration> GetByVolunteerAndShiftSlotAsync(Guid volunteerId, Guid shiftSlotId)
+    }
+
+    class IWaitlistRepository {
+        <<interface>>
+        +Task<WaitlistEntry> GetByIdAsync(Guid id)
+        +Task<List<WaitlistEntry>> GetByShiftSlotAsync(Guid shiftSlotId)
+        +Task<WaitlistEntry> GetNextAsync(Guid shiftSlotId)
+        +Task AddAsync(WaitlistEntry entity)
+        +Task UpdateAsync(WaitlistEntry entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class IVolunteerSkillRepository {
+        <<interface>>
+        +Task<VolunteerSkill> GetByIdAsync(Guid id)
+        +Task<List<VolunteerSkill>> GetByVolunteerAsync(Guid volunteerId)
+        +Task AddAsync(VolunteerSkill entity)
+        +Task UpdateAsync(VolunteerSkill entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class IVolunteerCertificationRepository {
+        <<interface>>
+        +Task<VolunteerCertification> GetByIdAsync(Guid id)
+        +Task<List<VolunteerCertification>> GetByVolunteerAsync(Guid volunteerId)
+        +Task<List<VolunteerCertification>> GetExpiringAsync(DateTime before)
+        +Task AddAsync(VolunteerCertification entity)
+        +Task UpdateAsync(VolunteerCertification entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class IAvailabilityRepository {
+        <<interface>>
+        +Task<Availability> GetByIdAsync(Guid id)
+        +Task<List<Availability>> GetByVolunteerAsync(Guid volunteerId)
+        +Task AddAsync(Availability entity)
+        +Task UpdateAsync(Availability entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class ISkillRepository {
+        <<interface>>
+        +Task<Skill> GetByIdAsync(Guid id)
+        +Task<List<Skill>> GetAllAsync()
+        +Task AddAsync(Skill entity)
+        +Task UpdateAsync(Skill entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class ICertificationRepository {
+        <<interface>>
+        +Task<Certification> GetByIdAsync(Guid id)
+        +Task<List<Certification>> GetAllAsync()
+        +Task AddAsync(Certification entity)
+        +Task UpdateAsync(Certification entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class IAttendanceRecordRepository {
+        <<interface>>
+        +Task<AttendanceRecord> GetByIdAsync(Guid id)
+        +Task<List<AttendanceRecord>> GetByVolunteerAsync(Guid volunteerId)
+        +Task<List<AttendanceRecord>> GetByShiftSlotAsync(Guid shiftSlotId)
+        +Task AddAsync(AttendanceRecord entity)
+        +Task UpdateAsync(AttendanceRecord entity)
+    }
+
+    class IUnitOfWork {
+        <<interface>>
+        +Task SaveChangesAsync()
+        +Task BeginTransactionAsync()
+        +Task CommitTransactionAsync()
+        +Task RollbackTransactionAsync()
+    }
+
+    %% ===================== REPOSITORY IMPLEMENTATIONS =====================
+    class VolunteerRepository {
+        <<repository>>
+        - AppDbContext _context
+        +VolunteerRepository(AppDbContext)
+        +Task<VolunteerProfile> GetByIdAsync(Guid id)
+        +Task<List<VolunteerProfile>> GetAllAsync()
+        +Task AddAsync(VolunteerProfile entity)
+        +Task UpdateAsync(VolunteerProfile entity)
+        +Task DeleteAsync(Guid id)
+        +Task<VolunteerProfile> GetByUserIdAsync(Guid userId)
+        +Task<List<VolunteerProfile>> GetByOrganizationAsync(Guid organizationId)
+    }
+
+    class OrganizationRepository {
+        <<repository>>
+        - AppDbContext _context
+        +OrganizationRepository(AppDbContext)
+        +Task<Organization> GetByIdAsync(Guid id)
+        +Task<List<Organization>> GetAllAsync()
+        +Task AddAsync(Organization entity)
+        +Task UpdateAsync(Organization entity)
+        +Task DeleteAsync(Guid id)
+        +Task<Organization> GetByNameAsync(string name)
+    }
+
+    class OrganizationMembershipRepository {
+        <<repository>>
+        - AppDbContext _context
+        +OrganizationMembershipRepository(AppDbContext)
+        +Task<OrganizationMembership> GetByIdAsync(Guid id)
+        +Task<List<OrganizationMembership>> GetByOrganizationAsync(Guid organizationId)
+        +Task<List<OrganizationMembership>> GetByUserAsync(Guid userId)
+        +Task<OrganizationMembership> GetByUserAndOrganizationAsync(Guid userId, Guid organizationId)
+        +Task AddAsync(OrganizationMembership entity)
+        +Task UpdateAsync(OrganizationMembership entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class EventRepository {
+        <<repository>>
+        - AppDbContext _context
+        +EventRepository(AppDbContext)
+        +Task<Event> GetByIdAsync(Guid id)
+        +Task<List<Event>> GetAllAsync(EventFilterDto filter)
+        +Task AddAsync(Event entity)
+        +Task UpdateAsync(Event entity)
+        +Task DeleteAsync(Guid id)
+        +Task<List<Event>> GetByOrganizationAsync(Guid organizationId)
+        +Task<List<Event>> GetUpcomingAsync(DateTime from, DateTime to)
+    }
+
+    class EventSeriesRepository {
+        <<repository>>
+        - AppDbContext _context
+        +EventSeriesRepository(AppDbContext)
+        +Task<EventSeries> GetByIdAsync(Guid id)
+        +Task<List<EventSeries>> GetByOrganizationAsync(Guid organizationId)
+        +Task AddAsync(EventSeries entity)
+        +Task UpdateAsync(EventSeries entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class EventOccurrenceRepository {
+        <<repository>>
+        - AppDbContext _context
+        +EventOccurrenceRepository(AppDbContext)
+        +Task<EventOccurrence> GetByIdAsync(Guid id)
+        +Task<List<EventOccurrence>> GetBySeriesAsync(Guid seriesId)
+        +Task AddAsync(EventOccurrence entity)
+        +Task UpdateAsync(EventOccurrence entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class ShiftTemplateRepository {
+        <<repository>>
+        - AppDbContext _context
+        +ShiftTemplateRepository(AppDbContext)
+        +Task<ShiftTemplate> GetByIdAsync(Guid id)
+        +Task<List<ShiftTemplate>> GetByOrganizationAsync(Guid organizationId)
+        +Task AddAsync(ShiftTemplate entity)
+        +Task UpdateAsync(ShiftTemplate entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class ShiftRepository {
+        <<repository>>
+        - AppDbContext _context
+        +ShiftRepository(AppDbContext)
+        +Task<Shift> GetByIdAsync(Guid id)
+        +Task<List<Shift>> GetByEventAsync(Guid eventId)
+        +Task AddAsync(Shift entity)
+        +Task UpdateAsync(Shift entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class ShiftSlotRepository {
+        <<repository>>
+        - AppDbContext _context
+        +ShiftSlotRepository(AppDbContext)
+        +Task<ShiftSlot> GetByIdAsync(Guid id)
+        +Task<List<ShiftSlot>> GetByShiftAsync(Guid shiftId)
+        +Task AddAsync(ShiftSlot entity)
+        +Task UpdateAsync(ShiftSlot entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class RegistrationRepository {
+        <<repository>>
+        - AppDbContext _context
+        +RegistrationRepository(AppDbContext)
+        +Task<Registration> GetByIdAsync(Guid id)
+        +Task<List<Registration>> GetByVolunteerAsync(Guid volunteerId)
+        +Task<List<Registration>> GetByShiftSlotAsync(Guid shiftSlotId)
+        +Task AddAsync(Registration entity)
+        +Task UpdateAsync(Registration entity)
+        +Task DeleteAsync(Guid id)
+        +Task<Registration> GetByVolunteerAndShiftSlotAsync(Guid volunteerId, Guid shiftSlotId)
+    }
+
+    class WaitlistRepository {
+        <<repository>>
+        - AppDbContext _context
+        +WaitlistRepository(AppDbContext)
+        +Task<WaitlistEntry> GetByIdAsync(Guid id)
+        +Task<List<WaitlistEntry>> GetByShiftSlotAsync(Guid shiftSlotId)
+        +Task<WaitlistEntry> GetNextAsync(Guid shiftSlotId)
+        +Task AddAsync(WaitlistEntry entity)
+        +Task UpdateAsync(WaitlistEntry entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class VolunteerSkillRepository {
+        <<repository>>
+        - AppDbContext _context
+        +VolunteerSkillRepository(AppDbContext)
+        +Task<VolunteerSkill> GetByIdAsync(Guid id)
+        +Task<List<VolunteerSkill>> GetByVolunteerAsync(Guid volunteerId)
+        +Task AddAsync(VolunteerSkill entity)
+        +Task UpdateAsync(VolunteerSkill entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class VolunteerCertificationRepository {
+        <<repository>>
+        - AppDbContext _context
+        +VolunteerCertificationRepository(AppDbContext)
+        +Task<VolunteerCertification> GetByIdAsync(Guid id)
+        +Task<List<VolunteerCertification>> GetByVolunteerAsync(Guid volunteerId)
+        +Task<List<VolunteerCertification>> GetExpiringAsync(DateTime before)
+        +Task AddAsync(VolunteerCertification entity)
+        +Task UpdateAsync(VolunteerCertification entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class AvailabilityRepository {
+        <<repository>>
+        - AppDbContext _context
+        +AvailabilityRepository(AppDbContext)
+        +Task<Availability> GetByIdAsync(Guid id)
+        +Task<List<Availability>> GetByVolunteerAsync(Guid volunteerId)
+        +Task AddAsync(Availability entity)
+        +Task UpdateAsync(Availability entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class SkillRepository {
+        <<repository>>
+        - AppDbContext _context
+        +SkillRepository(AppDbContext)
+        +Task<Skill> GetByIdAsync(Guid id)
+        +Task<List<Skill>> GetAllAsync()
+        +Task AddAsync(Skill entity)
+        +Task UpdateAsync(Skill entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class CertificationRepository {
+        <<repository>>
+        - AppDbContext _context
+        +CertificationRepository(AppDbContext)
+        +Task<Certification> GetByIdAsync(Guid id)
+        +Task<List<Certification>> GetAllAsync()
+        +Task AddAsync(Certification entity)
+        +Task UpdateAsync(Certification entity)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class AttendanceRecordRepository {
+        <<repository>>
+        - AppDbContext _context
+        +AttendanceRecordRepository(AppDbContext)
+        +Task<AttendanceRecord> GetByIdAsync(Guid id)
+        +Task<List<AttendanceRecord>> GetByVolunteerAsync(Guid volunteerId)
+        +Task<List<AttendanceRecord>> GetByShiftSlotAsync(Guid shiftSlotId)
+        +Task AddAsync(AttendanceRecord entity)
+        +Task UpdateAsync(AttendanceRecord entity)
+    }
+
+    class UnitOfWork {
+        <<unitOfWork>>
+        - AppDbContext _context
+        +UnitOfWork(AppDbContext)
+        +Task SaveChangesAsync()
+        +Task BeginTransactionAsync()
+        +Task CommitTransactionAsync()
+        +Task RollbackTransactionAsync()
+    }
+
+    %% ===================== DATABASE CONTEXT =====================
+    class AppDbContext {
+        <<dbContext>>
+        +DbSet<VolunteerProfile> VolunteerProfiles
+        +DbSet<Organization> Organizations
+        +DbSet<OrganizationMembership> OrganizationMemberships
+        +DbSet<Event> Events
+        +DbSet<EventSeries> EventSeries
+        +DbSet<EventOccurrence> EventOccurrences
+        +DbSet<ShiftTemplate> ShiftTemplates
+        +DbSet<Shift> Shifts
+        +DbSet<ShiftSlot> ShiftSlots
+        +DbSet<Registration> Registrations
+        +DbSet<WaitlistEntry> WaitlistEntries
+        +DbSet<VolunteerSkill> VolunteerSkills
+        +DbSet<VolunteerCertification> VolunteerCertifications
+        +DbSet<Availability> Availabilities
+        +DbSet<Skill> Skills
+        +DbSet<Certification> Certifications
+        +DbSet<AttendanceRecord> AttendanceRecords
+        +DbSet<ShiftTemplateSkill> ShiftTemplateSkills
+        +DbSet<ShiftTemplateCertification> ShiftTemplateCertifications
+        +Task SaveChangesAsync()
+        +void OnModelCreating(ModelBuilder)
+    }
+
+    %% ===================== RELATIONSHIPS =====================
+    IVolunteerRepository <|.. VolunteerRepository : implements
+    IOrganizationRepository <|.. OrganizationRepository : implements
+    IOrganizationMembershipRepository <|.. OrganizationMembershipRepository : implements
+    IEventRepository <|.. EventRepository : implements
+    IEventSeriesRepository <|.. EventSeriesRepository : implements
+    IEventOccurrenceRepository <|.. EventOccurrenceRepository : implements
+    IShiftTemplateRepository <|.. ShiftTemplateRepository : implements
+    IShiftRepository <|.. ShiftRepository : implements
+    IShiftSlotRepository <|.. ShiftSlotRepository : implements
+    IRegistrationRepository <|.. RegistrationRepository : implements
+    IWaitlistRepository <|.. WaitlistRepository : implements
+    IVolunteerSkillRepository <|.. VolunteerSkillRepository : implements
+    IVolunteerCertificationRepository <|.. VolunteerCertificationRepository : implements
+    IAvailabilityRepository <|.. AvailabilityRepository : implements
+    ISkillRepository <|.. SkillRepository : implements
+    ICertificationRepository <|.. CertificationRepository : implements
+    IAttendanceRecordRepository <|.. AttendanceRecordRepository : implements
+    IUnitOfWork <|.. UnitOfWork : implements
+
+    VolunteerRepository ..> AppDbContext : uses
+    OrganizationRepository ..> AppDbContext : uses
+    OrganizationMembershipRepository ..> AppDbContext : uses
+    EventRepository ..> AppDbContext : uses
+    EventSeriesRepository ..> AppDbContext : uses
+    EventOccurrenceRepository ..> AppDbContext : uses
+    ShiftTemplateRepository ..> AppDbContext : uses
+    ShiftRepository ..> AppDbContext : uses
+    ShiftSlotRepository ..> AppDbContext : uses
+    RegistrationRepository ..> AppDbContext : uses
+    WaitlistRepository ..> AppDbContext : uses
+    VolunteerSkillRepository ..> AppDbContext : uses
+    VolunteerCertificationRepository ..> AppDbContext : uses
+    AvailabilityRepository ..> AppDbContext : uses
+    SkillRepository ..> AppDbContext : uses
+    CertificationRepository ..> AppDbContext : uses
+    AttendanceRecordRepository ..> AppDbContext : uses
+    UnitOfWork ..> AppDbContext : uses

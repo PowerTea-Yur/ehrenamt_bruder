@@ -1,0 +1,279 @@
+classDiagram
+    direction TB
+
+    %% ===================== SERVICE INTERFACES =====================
+    class IVolunteerService {
+        <<interface>>
+        +Task<VolunteerDto> GetByIdAsync(Guid id)
+        +Task<List<VolunteerDto>> GetAllAsync()
+        +Task<VolunteerDto> CreateAsync(CreateVolunteerDto dto)
+        +Task UpdateAsync(Guid id, UpdateVolunteerDto dto)
+        +Task DeleteAsync(Guid id)
+        +Task AddSkillAsync(Guid volunteerId, AddVolunteerSkillDto dto)
+        +Task RemoveSkillAsync(Guid volunteerId, Guid skillId)
+        +Task AddCertificationAsync(Guid volunteerId, AddVolunteerCertificationDto dto)
+        +Task UpdateCertificationVerificationAsync(Guid volunteerId, Guid certId, UpdateCertVerificationDto dto)
+        +Task AddAvailabilityAsync(Guid volunteerId, AddAvailabilityDto dto)
+        +Task<List<EventDto>> GetAvailableEventsAsync(Guid volunteerId, DateTime? from, DateTime? to)
+        +Task<RegistrationDto> RegisterForShiftAsync(Guid volunteerId, Guid shiftSlotId)
+        +Task CancelRegistrationAsync(Guid volunteerId, Guid registrationId, string reason)
+    }
+
+    class IOrganizationService {
+        <<interface>>
+        +Task<OrganizationDto> GetByIdAsync(Guid id)
+        +Task<List<OrganizationDto>> GetAllAsync()
+        +Task<OrganizationDto> CreateAsync(CreateOrganizationDto dto)
+        +Task UpdateAsync(Guid id, UpdateOrganizationDto dto)
+        +Task DeleteAsync(Guid id)
+        +Task AddMemberAsync(Guid orgId, AddMemberDto dto)
+        +Task UpdateMemberRoleAsync(Guid orgId, Guid userId, string role)
+        +Task RemoveMemberAsync(Guid orgId, Guid userId)
+    }
+
+    class IEventService {
+        <<interface>>
+        +Task<EventDto> GetByIdAsync(Guid id)
+        +Task<List<EventDto>> GetAllAsync(EventFilterDto filter)
+        +Task<EventDto> CreateAsync(CreateEventDto dto)
+        +Task UpdateAsync(Guid id, UpdateEventDto dto)
+        +Task DeleteAsync(Guid id)
+        +Task PublishAsync(Guid id)
+        +Task CancelAsync(Guid id)
+        +Task<ShiftDto> AddShiftAsync(Guid eventId, CreateShiftDto dto)
+        +Task RemoveShiftAsync(Guid eventId, Guid shiftId)
+    }
+
+    class IShiftService {
+        <<interface>>
+        +Task<ShiftDto> GetByIdAsync(Guid id)
+        +Task<List<ShiftDto>> GetByEventAsync(Guid eventId)
+        +Task<ShiftTemplateDto> CreateTemplateAsync(CreateShiftTemplateDto dto)
+        +Task<ShiftTemplateDto> GetTemplateByIdAsync(Guid id)
+        +Task<List<ShiftTemplateDto>> GetTemplatesAsync(Guid organizationId)
+        +Task UpdateTemplateAsync(Guid id, UpdateShiftTemplateDto dto)
+        +Task DeleteTemplateAsync(Guid id)
+        +Task AddSkillRequirementAsync(Guid templateId, Guid skillId, bool required)
+        +Task RemoveSkillRequirementAsync(Guid templateId, Guid skillId)
+        +Task AddCertificationRequirementAsync(Guid templateId, Guid certId, bool required)
+        +Task RemoveCertificationRequirementAsync(Guid templateId, Guid certId)
+    }
+
+    class IRegistrationService {
+        <<interface>>
+        +Task<RegistrationDto> RegisterAsync(Guid volunteerId, Guid shiftSlotId)
+        +Task ConfirmAsync(Guid registrationId)
+        +Task CancelAsync(Guid registrationId, string reason)
+        +Task<AttendanceRecordDto> CheckInAsync(Guid registrationId, DateTime checkedInAt)
+        +Task<AttendanceRecordDto> CheckOutAsync(Guid registrationId, DateTime checkedOutAt)
+        +Task<List<RegistrationDto>> GetByVolunteerAsync(Guid volunteerId)
+        +Task<List<RegistrationDto>> GetByShiftSlotAsync(Guid shiftSlotId)
+        +Task<WaitlistEntryDto> JoinWaitlistAsync(Guid volunteerId, Guid shiftSlotId)
+        +Task ClaimWaitlistSpotAsync(Guid waitlistEntryId)
+        +Task NotifyWaitlistAsync(Guid shiftSlotId)
+    }
+
+    class ISkillService {
+        <<interface>>
+        +Task<List<SkillDto>> GetAllAsync()
+        +Task<SkillDto> GetByIdAsync(Guid id)
+        +Task<SkillDto> CreateAsync(CreateSkillDto dto)
+        +Task UpdateAsync(Guid id, UpdateSkillDto dto)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class ICertificationService {
+        <<interface>>
+        +Task<List<CertificationDto>> GetAllAsync()
+        +Task<CertificationDto> GetByIdAsync(Guid id)
+        +Task<CertificationDto> CreateAsync(CreateCertificationDto dto)
+        +Task UpdateAsync(Guid id, UpdateCertificationDto dto)
+        +Task DeleteAsync(Guid id)
+        +Task<List<VolunteerCertificationDto>> GetExpiringAsync(int daysAhead)
+    }
+
+    class IEventSeriesService {
+        <<interface>>
+        +Task<EventSeriesDto> GetByIdAsync(Guid id)
+        +Task<EventSeriesDto> CreateAsync(CreateEventSeriesDto dto)
+        +Task GenerateOccurrencesAsync(Guid seriesId, DateTime from, DateTime to)
+        +Task AddExceptionAsync(Guid seriesId, DateTime date)
+        +Task RemoveExceptionAsync(Guid seriesId, DateTime date)
+    }
+
+    %% ===================== SERVICE IMPLEMENTATIONS =====================
+    class VolunteerService {
+        <<service>>
+        - IVolunteerRepository _repo
+        - IEventRepository _eventRepo
+        - IRegistrationRepository _regRepo
+        - IShiftSlotRepository _slotRepo
+        - IMapper _mapper
+        +VolunteerService(...)
+        +Task<VolunteerDto> GetByIdAsync(Guid id)
+        +Task<List<VolunteerDto>> GetAllAsync()
+        +Task<VolunteerDto> CreateAsync(CreateVolunteerDto dto)
+        +Task UpdateAsync(Guid id, UpdateVolunteerDto dto)
+        +Task DeleteAsync(Guid id)
+        +Task AddSkillAsync(Guid volunteerId, AddVolunteerSkillDto dto)
+        +Task RemoveSkillAsync(Guid volunteerId, Guid skillId)
+        +Task AddCertificationAsync(Guid volunteerId, AddVolunteerCertificationDto dto)
+        +Task UpdateCertificationVerificationAsync(Guid volunteerId, Guid certId, UpdateCertVerificationDto dto)
+        +Task AddAvailabilityAsync(Guid volunteerId, AddAvailabilityDto dto)
+        +Task<List<EventDto>> GetAvailableEventsAsync(Guid volunteerId, DateTime? from, DateTime? to)
+        +Task<RegistrationDto> RegisterForShiftAsync(Guid volunteerId, Guid shiftSlotId)
+        +Task CancelRegistrationAsync(Guid volunteerId, Guid registrationId, string reason)
+    }
+
+    class OrganizationService {
+        <<service>>
+        - IOrganizationRepository _repo
+        - IOrganizationMembershipRepository _memberRepo
+        - IMapper _mapper
+        +OrganizationService(...)
+        +Task<OrganizationDto> GetByIdAsync(Guid id)
+        +Task<List<OrganizationDto>> GetAllAsync()
+        +Task<OrganizationDto> CreateAsync(CreateOrganizationDto dto)
+        +Task UpdateAsync(Guid id, UpdateOrganizationDto dto)
+        +Task DeleteAsync(Guid id)
+        +Task AddMemberAsync(Guid orgId, AddMemberDto dto)
+        +Task UpdateMemberRoleAsync(Guid orgId, Guid userId, string role)
+        +Task RemoveMemberAsync(Guid orgId, Guid userId)
+    }
+
+    class EventService {
+        <<service>>
+        - IEventRepository _repo
+        - IShiftRepository _shiftRepo
+        - IShiftTemplateRepository _templateRepo
+        - IMapper _mapper
+        +EventService(...)
+        +Task<EventDto> GetByIdAsync(Guid id)
+        +Task<List<EventDto>> GetAllAsync(EventFilterDto filter)
+        +Task<EventDto> CreateAsync(CreateEventDto dto)
+        +Task UpdateAsync(Guid id, UpdateEventDto dto)
+        +Task DeleteAsync(Guid id)
+        +Task PublishAsync(Guid id)
+        +Task CancelAsync(Guid id)
+        +Task<ShiftDto> AddShiftAsync(Guid eventId, CreateShiftDto dto)
+        +Task RemoveShiftAsync(Guid eventId, Guid shiftId)
+    }
+
+    class ShiftService {
+        <<service>>
+        - IShiftTemplateRepository _templateRepo
+        - IShiftRepository _shiftRepo
+        - ISkillRepository _skillRepo
+        - ICertificationRepository _certRepo
+        - IMapper _mapper
+        +ShiftService(...)
+        +Task<ShiftDto> GetByIdAsync(Guid id)
+        +Task<List<ShiftDto>> GetByEventAsync(Guid eventId)
+        +Task<ShiftTemplateDto> CreateTemplateAsync(CreateShiftTemplateDto dto)
+        +Task<ShiftTemplateDto> GetTemplateByIdAsync(Guid id)
+        +Task<List<ShiftTemplateDto>> GetTemplatesAsync(Guid organizationId)
+        +Task UpdateTemplateAsync(Guid id, UpdateShiftTemplateDto dto)
+        +Task DeleteTemplateAsync(Guid id)
+        +Task AddSkillRequirementAsync(Guid templateId, Guid skillId, bool required)
+        +Task RemoveSkillRequirementAsync(Guid templateId, Guid skillId)
+        +Task AddCertificationRequirementAsync(Guid templateId, Guid certId, bool required)
+        +Task RemoveCertificationRequirementAsync(Guid templateId, Guid certId)
+    }
+
+    class RegistrationService {
+        <<service>>
+        - IRegistrationRepository _repo
+        - IShiftSlotRepository _slotRepo
+        - IVolunteerRepository _volunteerRepo
+        - IWaitlistRepository _waitlistRepo
+        - IMapper _mapper
+        +RegistrationService(...)
+        +Task<RegistrationDto> RegisterAsync(Guid volunteerId, Guid shiftSlotId)
+        +Task ConfirmAsync(Guid registrationId)
+        +Task CancelAsync(Guid registrationId, string reason)
+        +Task<AttendanceRecordDto> CheckInAsync(Guid registrationId, DateTime checkedInAt)
+        +Task<AttendanceRecordDto> CheckOutAsync(Guid registrationId, DateTime checkedOutAt)
+        +Task<List<RegistrationDto>> GetByVolunteerAsync(Guid volunteerId)
+        +Task<List<RegistrationDto>> GetByShiftSlotAsync(Guid shiftSlotId)
+        +Task<WaitlistEntryDto> JoinWaitlistAsync(Guid volunteerId, Guid shiftSlotId)
+        +Task ClaimWaitlistSpotAsync(Guid waitlistEntryId)
+        +Task NotifyWaitlistAsync(Guid shiftSlotId)
+    }
+
+    class SkillService {
+        <<service>>
+        - ISkillRepository _repo
+        - IMapper _mapper
+        +SkillService(...)
+        +Task<List<SkillDto>> GetAllAsync()
+        +Task<SkillDto> GetByIdAsync(Guid id)
+        +Task<SkillDto> CreateAsync(CreateSkillDto dto)
+        +Task UpdateAsync(Guid id, UpdateSkillDto dto)
+        +Task DeleteAsync(Guid id)
+    }
+
+    class CertificationService {
+        <<service>>
+        - ICertificationRepository _repo
+        - IVolunteerCertificationRepository _volCertRepo
+        - IMapper _mapper
+        +CertificationService(...)
+        +Task<List<CertificationDto>> GetAllAsync()
+        +Task<CertificationDto> GetByIdAsync(Guid id)
+        +Task<CertificationDto> CreateAsync(CreateCertificationDto dto)
+        +Task UpdateAsync(Guid id, UpdateCertificationDto dto)
+        +Task DeleteAsync(Guid id)
+        +Task<List<VolunteerCertificationDto>> GetExpiringAsync(int daysAhead)
+    }
+
+    class EventSeriesService {
+        <<service>>
+        - IEventSeriesRepository _repo
+        - IEventRepository _eventRepo
+        - IMapper _mapper
+        +EventSeriesService(...)
+        +Task<EventSeriesDto> GetByIdAsync(Guid id)
+        +Task<EventSeriesDto> CreateAsync(CreateEventSeriesDto dto)
+        +Task GenerateOccurrencesAsync(Guid seriesId, DateTime from, DateTime to)
+        +Task AddExceptionAsync(Guid seriesId, DateTime date)
+        +Task RemoveExceptionAsync(Guid seriesId, DateTime date)
+    }
+
+    %% ===================== RELATIONSHIPS =====================
+    IVolunteerService <|.. VolunteerService : implements
+    IOrganizationService <|.. OrganizationService : implements
+    IEventService <|.. EventService : implements
+    IShiftService <|.. ShiftService : implements
+    IRegistrationService <|.. RegistrationService : implements
+    ISkillService <|.. SkillService : implements
+    ICertificationService <|.. CertificationService : implements
+    IEventSeriesService <|.. EventSeriesService : implements
+
+    VolunteerService ..> IVolunteerRepository : uses
+    VolunteerService ..> IEventRepository : uses
+    VolunteerService ..> IRegistrationRepository : uses
+    VolunteerService ..> IShiftSlotRepository : uses
+
+    OrganizationService ..> IOrganizationRepository : uses
+    OrganizationService ..> IOrganizationMembershipRepository : uses
+
+    EventService ..> IEventRepository : uses
+    EventService ..> IShiftRepository : uses
+    EventService ..> IShiftTemplateRepository : uses
+
+    ShiftService ..> IShiftTemplateRepository : uses
+    ShiftService ..> IShiftRepository : uses
+    ShiftService ..> ISkillRepository : uses
+    ShiftService ..> ICertificationRepository : uses
+
+    RegistrationService ..> IRegistrationRepository : uses
+    RegistrationService ..> IShiftSlotRepository : uses
+    RegistrationService ..> IVolunteerRepository : uses
+    RegistrationService ..> IWaitlistRepository : uses
+
+    SkillService ..> ISkillRepository : uses
+    CertificationService ..> ICertificationRepository : uses
+    CertificationService ..> IVolunteerRepository : uses
+
+    EventSeriesService ..> IEventSeriesRepository : uses
+    EventSeriesService ..> IEventRepository : uses
