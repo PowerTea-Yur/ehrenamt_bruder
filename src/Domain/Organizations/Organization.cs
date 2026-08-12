@@ -1,11 +1,11 @@
-namespace Domain.Volunteers;
+namespace Domain.Organizations;
 
-public class Volunteer
+public class Organization
 {
     public Guid Id { get; }
     public string Name { get; }
 
-    public Volunteer(Guid id, string name)
+    public Organization(Guid id, string name)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Name cannot be empty.", nameof(name));

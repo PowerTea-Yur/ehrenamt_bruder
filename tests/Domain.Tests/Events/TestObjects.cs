@@ -30,10 +30,16 @@ internal static class TestObjects
 
     public static Event CreateEvent(
         Guid? id = null,
+        Guid? organizationId = null,
         string name = "Beach Cleanup",
         string street = "Main Street 1"
     )
     {
-        return new Event(id ?? Guid.NewGuid(), name, new Location(street));
+        return new Event(
+            id ?? Guid.NewGuid(),
+            organizationId ?? Guid.NewGuid(),
+            name,
+            new Location(street)
+        );
     }
 }

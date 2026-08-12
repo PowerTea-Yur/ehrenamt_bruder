@@ -6,14 +6,18 @@ public class Event
     private readonly List<ShiftRole> _shiftRoles = new();
 
     public Guid Id { get; }
+    public Guid OrganizationId { get; }
     public string Name { get; }
     public Location Location { get; private set; }
     public EventStatus Status { get; private set; } = EventStatus.Draft;
     public IReadOnlyCollection<Shift> Shifts => _shifts.AsReadOnly();
     public IReadOnlyCollection<ShiftRole> ShiftRoles => _shiftRoles.AsReadOnly();
 
-    public Event(Guid id, string name, Location location)
+    public Event(Guid id, Guid organizationId, string name, Location location)
     {
+        if (organizationId == Guid.Empty)
+            throw new ArgumentException("OrganizationId cannot be empty.", nameof(organizationId));
+
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Name cannot be empty.", nameof(name));
 

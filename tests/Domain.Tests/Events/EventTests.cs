@@ -19,6 +19,12 @@ public class EventTests
     }
 
     [Fact]
+    public void Constructor_WithEmptyOrganizationId_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => TestObjects.CreateEvent(organizationId: Guid.Empty));
+    }
+
+    [Fact]
     public void Publish_OnFreshEvent_SetsStatusToPublished()
     {
         var sut = TestObjects.CreateEvent();
