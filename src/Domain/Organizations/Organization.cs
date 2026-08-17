@@ -13,4 +13,9 @@ public class Organization
         Id = id;
         Name = name;
     }
+
+    private Organization()
+    {
+        Name = null!;
+    }
 }

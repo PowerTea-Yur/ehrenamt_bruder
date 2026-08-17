@@ -8,8 +8,8 @@ public class RegistrationDecisionServiceTests
     [Fact]
     public void Decide_WithCapacityAvailableAndNoApprovalRequired_ReturnsConfirmed()
     {
-        var assignment = new ShiftRoleAssignment(Guid.NewGuid(), Guid.NewGuid(), maxVolunteers: 2);
         var role = new ShiftRole(Guid.NewGuid(), "Deckhand", requiresApproval: false);
+        var assignment = new ShiftRoleAssignment(Guid.NewGuid(), role, maxVolunteers: 2);
         var existingRegistrations = Array.Empty<Registration>();
 
         var result = RegistrationDecisionService.Decide(assignment, role, existingRegistrations);
@@ -20,8 +20,8 @@ public class RegistrationDecisionServiceTests
     [Fact]
     public void Decide_WithCapacityAvailableAndApprovalRequired_ReturnsPending()
     {
-        var assignment = new ShiftRoleAssignment(Guid.NewGuid(), Guid.NewGuid(), maxVolunteers: 2);
         var role = new ShiftRole(Guid.NewGuid(), "Boat Driver", requiresApproval: true);
+        var assignment = new ShiftRoleAssignment(Guid.NewGuid(), role, maxVolunteers: 2);
         var existingRegistrations = Array.Empty<Registration>();
 
         var result = RegistrationDecisionService.Decide(assignment, role, existingRegistrations);
@@ -32,8 +32,8 @@ public class RegistrationDecisionServiceTests
     [Fact]
     public void Decide_WithNoCapacityRemaining_ReturnsWaitlisted()
     {
-        var assignment = new ShiftRoleAssignment(Guid.NewGuid(), Guid.NewGuid(), maxVolunteers: 1);
         var role = new ShiftRole(Guid.NewGuid(), "Boat Driver", requiresApproval: false);
+        var assignment = new ShiftRoleAssignment(Guid.NewGuid(), role, maxVolunteers: 1);
         var existingRegistrations = new[]
         {
             Registration.CreateConfirmed(
@@ -52,8 +52,8 @@ public class RegistrationDecisionServiceTests
     [Fact]
     public void Decide_WithPendingRegistrationsFillingCapacity_ReturnsWaitlisted()
     {
-        var assignment = new ShiftRoleAssignment(Guid.NewGuid(), Guid.NewGuid(), maxVolunteers: 1);
         var role = new ShiftRole(Guid.NewGuid(), "Boat Driver", requiresApproval: true);
+        var assignment = new ShiftRoleAssignment(Guid.NewGuid(), role, maxVolunteers: 1);
         var existingRegistrations = new[]
         {
             Registration.CreatePending(

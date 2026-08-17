@@ -15,4 +15,9 @@ public class ShiftRole
         Name = name;
         RequiresApproval = requiresApproval;
     }
+
+    private ShiftRole()
+    {
+        Name = null!;
+    }
 }

@@ -13,4 +13,9 @@ public class Volunteer
         Id = id;
         Name = name;
     }
+
+    private Volunteer()
+    {
+        Name = null!;
+    }
 }

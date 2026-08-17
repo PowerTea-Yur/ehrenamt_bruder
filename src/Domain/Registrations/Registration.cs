@@ -29,6 +29,8 @@ public class Registration
         JoinedAtUtc = joinedAtUtc;
     }
 
+    private Registration() { }
+
     public static Registration CreateConfirmed(
         Guid volunteerId,
         Guid eventId,
