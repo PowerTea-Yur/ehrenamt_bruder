@@ -4,5 +4,5 @@ namespace Application.Events;
 
 public interface IEventRepository
 {
-    Task AddAsync(Event @event);
+  Task AddAsync(Event @event);
 }

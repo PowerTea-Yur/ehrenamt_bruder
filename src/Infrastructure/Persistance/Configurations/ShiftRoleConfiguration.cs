@@ -6,10 +6,10 @@ namespace Infrastructure.Persistance.Configurations;
 
 public class ShiftRoleConfiguration : IEntityTypeConfiguration<ShiftRole>
 {
-    public void Configure(EntityTypeBuilder<ShiftRole> builder)
-    {
-        builder.HasKey(sr => sr.Id);
-        builder.Property(sr => sr.Name).IsRequired();
-        builder.Property(sr => sr.RequiresApproval).IsRequired();
-    }
+  public void Configure(EntityTypeBuilder<ShiftRole> builder)
+  {
+    builder.HasKey(sr => sr.Id);
+    builder.Property(sr => sr.Name).IsRequired();
+    builder.Property(sr => sr.RequiresApproval).IsRequired();
+  }
 }
