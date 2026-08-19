@@ -1,6 +1,6 @@
 using Domain.Events;
-using Infrastructure.Persistance;
-using Infrastructure.Persistance.Repositories;
+using Infrastructure.Persistence;
+using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.MsSql;
 
