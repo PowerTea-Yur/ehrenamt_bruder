@@ -1,7 +1,7 @@
 using Application.Events;
 using Domain.Events;
 
-namespace Infrastructure.Persistance.Repositories;
+namespace Infrastructure.Persistence.Repositories;
 
 public class EventRepository(AppDbContext context) : IEventRepository
 {
